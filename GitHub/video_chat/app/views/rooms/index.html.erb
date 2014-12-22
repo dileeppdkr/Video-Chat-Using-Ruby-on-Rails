@@ -1,0 +1,59 @@
+
+<div id='newRoom'>
+<fieldset>
+<legend>Start a new party room</legend>
+<%= form_for(@room) do |f| %>
+Email: <%= f.email_field :email %><br/><br/>
+status? <%= f.check_box :status %><br/><br/>
+ <%= f.hidden_field :sessionId %><br/><br/>
+
+<%= f.submit %>
+<% end %>
+</fieldset>
+</div>
+
+<fieldset>
+<legend>Existing party rooms</legend>
+<table cellpadding=”2″ cellspacing=”5″>
+<tr>
+<th>Party Name</th>
+<th>status</th>
+</tr>
+
+<% @rooms.each do |room| %>
+<tr>
+<td align='center' width='300px'><a href='/party/<%= room.id %>'><%= room.email %></a></td>
+<td><%= room.status %></td>
+</tr>
+<% end %>
+</table>
+</fieldset>
+<video autoplay id="vid" style="display:none;"></video>
+<canvas id="canvas" width="640" height="480" style="border:1px solid #d3d3d3;"></canvas><br>
+<button onclick="snapshot()">Take Picture</button>
+
+<script type="text/javascript">
+
+    var video = document.querySelector("#vid");
+    var canvas = document.querySelector('#canvas');
+    var ctx = canvas.getContext('2d');
+    var localMediaStream = null;
+
+    var onCameraFail = function (e) {
+        console.log('Camera did not work.', e);
+    };
+
+    function snapshot() {
+        if (localMediaStream) {
+            ctx.drawImage(video, 0, 0);
+        }
+    }
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia({video:true}, function (stream) {
+        video.src = window.URL.createObjectURL(stream);
+        localMediaStream = stream;
+    }, onCameraFail);
+
+</script>
